@@ -1,0 +1,5 @@
+<Simulation version="4.2.5">
+   <XMLScript Type="XMLScript">Simulation/ECM-cellInteraction.xml</XMLScript>
+   <PythonScript Type="PythonScript">Simulation/ECM-cellInteraction.py</PythonScript>
+   <Resource Type="Python">Simulation/ECM-cellInteractionSteppables.py</Resource>
+</Simulation>

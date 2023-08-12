@@ -50,8 +50,7 @@
       <Energy Type1="MES" Type2="MES">10.0</Energy>
       <NeighborOrder>4</NeighborOrder>
    </Plugin>
-   <Plugin Name="Secretion"></Plugin>
-
+   
    <Steppable Type="DiffusionSolverFE">
       
       <!-- Specification of PDE solvers -->
@@ -59,37 +58,37 @@
          <DiffusionData>
             <FieldName>ECM_D</FieldName>
             <GlobalDiffusionConstant>0.1</GlobalDiffusionConstant>
-            <GlobalDecayConstant>0.0</GlobalDecayConstant>
+            <GlobalDecayConstant>1e-05</GlobalDecayConstant>
             <!-- Additional options are: -->
-            <InitialConcentrationExpression>x/256</InitialConcentrationExpression>
+            <!-- <InitialConcentrationExpression>x*y</InitialConcentrationExpression> -->
             <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
-            <!-- <DiffusionCoefficient CellType="EPI">0.1</DiffusionCoefficient> -->
-            <!-- <DiffusionCoefficient CellType="MES">0.1</DiffusionCoefficient> -->
-            <!-- <DecayCoefficient CellType="EPI">0.0001</DecayCoefficient> -->
-            <!-- <DecayCoefficient CellType="MES">0.0001</DecayCoefficient> -->
+            <DiffusionCoefficient CellType="EPI">0.1</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="MES">0.1</DiffusionCoefficient>
+            <DecayCoefficient CellType="EPI">0.0001</DecayCoefficient>
+            <DecayCoefficient CellType="MES">0.0001</DecayCoefficient>
          </DiffusionData>
          <SecretionData>
             <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
             
             <!-- Uniform secretion Definition -->
-            <!-- <Secretion Type="EPI">0.1</Secretion> -->
-            <!-- <Secretion Type="MES">0.1</Secretion> -->
+            <Secretion Type="EPI">0.1</Secretion>
+            <Secretion Type="MES">0.1</Secretion>
             <!-- <SecretionOnContact SecreteOnContactWith="EPI,MES" Type="MES">0.2</SecretionOnContact> -->
             <!-- <ConstantConcentration Type="MES">0.1</ConstantConcentration> -->
          </SecretionData>
          <BoundaryConditions>
             <Plane Axis="X">
-               <ConstantValue PlanePosition="Min" Value="0.0"/>
-               <ConstantValue PlanePosition="Max" Value="1.0"/>
+               <ConstantValue PlanePosition="Min" Value="10.0"/>
+               <ConstantValue PlanePosition="Max" Value="5.0"/>
                <!-- Other options are (examples): -->
                <!-- <Periodic/> -->
                <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
             <Plane Axis="Y">
-               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
-               <!-- <ConstantDerivative PlanePosition="Max" Value="5.0"/> -->
+               <ConstantDerivative PlanePosition="Min" Value="10.0"/>
+               <ConstantDerivative PlanePosition="Max" Value="5.0"/>
                <!-- Other options are (examples): -->
-               <Periodic/>
+               <!-- <Periodic/> -->
                <!-- <ConstantValue PlanePosition="Min" Value="10.0"/> -->
             </Plane>
          </BoundaryConditions>
@@ -104,7 +103,7 @@
          <Radius>51</Radius>
          <Gap>0</Gap>
          <Width>7</Width>
-         <Types>EPI</Types>
+         <Types>EPI,MES</Types>
       </Region>
    </Steppable>
 </CompuCell3D>

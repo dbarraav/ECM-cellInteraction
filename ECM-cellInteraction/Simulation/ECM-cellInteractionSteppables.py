@@ -1,7 +1,7 @@
 
 from cc3d.core.PySteppables import *
 
-class ECM_cellInteractionSteppable(SteppableBasePy):
+class ECM-cellInteractionSteppable(SteppableBasePy):
 
     def __init__(self,frequency=1):
 
@@ -17,19 +17,10 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
         type here the code that will run every frequency MCS
         :param mcs: current Monte Carlo step
         """
-        # ECM_D = self.field.ECM_D
-        ECM_D = self.get_field_secretor("ECM_D")
+
         for cell in self.cell_list:
-            
-            # value = ECM_D[cell.xCOM, cell.yCOM, 0]
-            cell.dict["ECM_DVal"] = ECM_D.amountSeenByCell(cell)
-            
-            # (self.EGF_GrowthScalar_STEM) * (cell.dict['EGF']**4/(self.EGF_STEM_HalfMaxValue**4 + cell.dict['EGF']**4)))
-            
-            # H = cell.dict["ECM_DVal"]**n/((thres*cell.volume)**n + cell.dict["ECM_DVal"]**n)
-            # if H > 0.5:
-                # cell.type = self.MES
-        #
+
+            print("cell.id=",cell.id)
 
     def finish(self):
         """
