@@ -32,6 +32,9 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
             
             if H > thres:
                 cell.type = self.MES
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CC',0)
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CM',3)
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'MM',0)
         #
 
     def finish(self):

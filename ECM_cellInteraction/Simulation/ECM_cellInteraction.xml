@@ -49,7 +49,7 @@
    <AdhesionMolecule Molecule="MM"/>
    <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CC"/>
    <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CM"/>
-   <AdhesionMoleculeDensity CellType="Medium" Density="100" Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="6" Molecule="MM"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="3" Molecule="CC"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="CM"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="MM"/>
@@ -57,7 +57,7 @@
    <AdhesionMoleculeDensity CellType="MES" Density="3" Molecule="CM"/>
    <AdhesionMoleculeDensity CellType="MES" Density="0" Molecule="MM"/>
    <BindingFormula Name="Binary">
-      <Formula>min(Molecule1,Molecule2)</Formula>
+      <Formula>Molecule1*Molecule2</Formula>
       <Variables>
          <AdhesionInteractionMatrix>
             <BindingParameter Molecule1="CC" Molecule2="CC">0.5</BindingParameter>
