@@ -31,8 +31,8 @@
    </Plugin>
    
    <Plugin Name="Surface">
-      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="2.0" TargetSurface="50"/>
-      <SurfaceEnergyParameters CellType="MES" LambdaSurface="2.0" TargetSurface="50"/>
+      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="2.0" TargetSurface="30"/>
+      <SurfaceEnergyParameters CellType="MES" LambdaSurface="2.0" TargetSurface="30"/>
    </Plugin>
    
    <Plugin Name="CenterOfMass">
@@ -40,16 +40,39 @@
       <!-- Module tracking center of mass of each cell -->
    </Plugin>
    
-   <Plugin Name="Contact">
-      <!-- Specification of adhesion energies -->
-      <Energy Type1="Medium" Type2="Medium">10.0</Energy>
-      <Energy Type1="Medium" Type2="EPI">10.0</Energy>
-      <Energy Type1="Medium" Type2="MES">10.0</Energy>
-      <Energy Type1="EPI" Type2="EPI">10.0</Energy>
-      <Energy Type1="EPI" Type2="MES">10.0</Energy>
-      <Energy Type1="MES" Type2="MES">10.0</Energy>
-      <NeighborOrder>4</NeighborOrder>
-   </Plugin>
+<Plugin Name="AdhesionFlex">
+   
+   <!-- Specification of adhesion energies as a function of cadherin concentration at cell membranes -->
+   <!-- Adhesion energy is a function of two cells in ocntact. the functional form is specified by the user -->
+   <AdhesionMolecule Molecule="CC"/>
+   <AdhesionMolecule Molecule="CM"/>
+   <AdhesionMolecule Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CC"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CM"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="100" Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="EPI" Density="3" Molecule="CC"/>
+   <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="CM"/>
+   <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="MES" Density="0" Molecule="CC"/>
+   <AdhesionMoleculeDensity CellType="MES" Density="3" Molecule="CM"/>
+   <AdhesionMoleculeDensity CellType="MES" Density="0" Molecule="MM"/>
+   <BindingFormula Name="Binary">
+      <Formula>min(Molecule1,Molecule2)</Formula>
+      <Variables>
+         <AdhesionInteractionMatrix>
+            <BindingParameter Molecule1="CC" Molecule2="CC">0.5</BindingParameter>
+            <BindingParameter Molecule1="CC" Molecule2="CM">0</BindingParameter>
+            <BindingParameter Molecule1="CC" Molecule2="MM">0</BindingParameter>
+            <BindingParameter Molecule1="CM" Molecule2="CM">0</BindingParameter>
+            <BindingParameter Molecule1="CM" Molecule2="MM">0.5</BindingParameter>
+            <BindingParameter Molecule1="MM" Molecule2="MM">0</BindingParameter>
+         </AdhesionInteractionMatrix>
+      </Variables>
+   </BindingFormula>
+   <NeighborOrder>1</NeighborOrder>
+</Plugin>
+
+   
    <Plugin Name="Secretion"></Plugin>
 
    <Steppable Type="DiffusionSolverFE">

@@ -1,5 +1,7 @@
 
 from cc3d.core.PySteppables import *
+n  = 2
+thres = 0.5
 
 class ECM_cellInteractionSteppable(SteppableBasePy):
 
@@ -26,9 +28,10 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
             
             # (self.EGF_GrowthScalar_STEM) * (cell.dict['EGF']**4/(self.EGF_STEM_HalfMaxValue**4 + cell.dict['EGF']**4)))
             
-            # H = cell.dict["ECM_DVal"]**n/((thres*cell.volume)**n + cell.dict["ECM_DVal"]**n)
-            # if H > 0.5:
-                # cell.type = self.MES
+            H = cell.dict["ECM_DVal"]**n/((thres*cell.volume)**n + cell.dict["ECM_DVal"]**n)
+            
+            if H > thres:
+                cell.type = self.MES
         #
 
     def finish(self):
