@@ -11,7 +11,7 @@
    <Potts>
       
       <!-- Basic properties of CPM (GGH) algorithm -->
-      <Dimensions x="256" y="256" z="1"/>
+      <Dimensions x="256" y="256" z="2"/>
       <Steps>100000</Steps>
       <Temperature>10.0</Temperature>
       <NeighborOrder>1</NeighborOrder>
@@ -23,6 +23,7 @@
       <CellType TypeId="0" TypeName="Medium"/>
       <CellType TypeId="1" TypeName="EPI"/>
       <CellType TypeId="2" TypeName="MES"/>
+      <CellType TypeId="3" TypeName="ECM" Freeze=""/>
    </Plugin>
    
    <Plugin Name="Volume">
@@ -31,15 +32,19 @@
    </Plugin>
    
    <Plugin Name="Surface">
-      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="2.0" TargetSurface="30"/>
-      <SurfaceEnergyParameters CellType="MES" LambdaSurface="2.0" TargetSurface="30"/>
+      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="2.0" TargetSurface="60"/>
+      <SurfaceEnergyParameters CellType="MES" LambdaSurface="2.0" TargetSurface="60"/>
    </Plugin>
    
    <Plugin Name="CenterOfMass">
       
       <!-- Module tracking center of mass of each cell -->
    </Plugin>
+   <Plugin Name="NeighborTracker">
    
+   <!-- Module tracking neighboring cells of each cell -->
+</Plugin>
+
 <Plugin Name="AdhesionFlex">
    
    <!-- Specification of adhesion energies as a function of cadherin concentration at cell membranes -->
@@ -49,13 +54,16 @@
    <AdhesionMolecule Molecule="MM"/>
    <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CC"/>
    <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="CM"/>
-   <AdhesionMoleculeDensity CellType="Medium" Density="6" Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="MM"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="3" Molecule="CC"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="CM"/>
    <AdhesionMoleculeDensity CellType="EPI" Density="0" Molecule="MM"/>
    <AdhesionMoleculeDensity CellType="MES" Density="0" Molecule="CC"/>
    <AdhesionMoleculeDensity CellType="MES" Density="3" Molecule="CM"/>
    <AdhesionMoleculeDensity CellType="MES" Density="0" Molecule="MM"/>
+   <AdhesionMoleculeDensity CellType="ECM" Density="0" Molecule="CC"/>
+   <AdhesionMoleculeDensity CellType="ECM" Density="0" Molecule="CM"/>
+   <AdhesionMoleculeDensity CellType="ECM" Density="6" Molecule="MM"/>
    <BindingFormula Name="Binary">
       <Formula>Molecule1*Molecule2</Formula>
       <Variables>
@@ -86,8 +94,8 @@
             <!-- Additional options are: -->
             <InitialConcentrationExpression>x/256</InitialConcentrationExpression>
             <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
-            <!-- <DiffusionCoefficient CellType="EPI">0.1</DiffusionCoefficient> -->
-            <!-- <DiffusionCoefficient CellType="MES">0.1</DiffusionCoefficient> -->
+            <DiffusionCoefficient CellType="EPI">0</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="MES">0</DiffusionCoefficient>
             <!-- <DecayCoefficient CellType="EPI">0.0001</DecayCoefficient> -->
             <!-- <DecayCoefficient CellType="MES">0.0001</DecayCoefficient> -->
          </DiffusionData>
@@ -95,7 +103,6 @@
             <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
             
             <!-- Uniform secretion Definition -->
-            <!-- <Secretion Type="EPI">0.1</Secretion> -->
             <!-- <Secretion Type="MES">0.1</Secretion> -->
             <!-- <SecretionOnContact SecreteOnContactWith="EPI,MES" Type="MES">0.2</SecretionOnContact> -->
             <!-- <ConstantConcentration Type="MES">0.1</ConstantConcentration> -->
@@ -119,15 +126,26 @@
       </DiffusionField>
    </Steppable>
    
-   <Steppable Type="BlobInitializer">
-      
-      <!-- Initial layout of cells in the form of spherical (circular in 2D) blob -->
-      <Region>
-         <Center x="128" y="128" z="0"/>
-         <Radius>51</Radius>
-         <Gap>0</Gap>
-         <Width>7</Width>
-         <Types>EPI</Types>
-      </Region>
-   </Steppable>
+   <!-- <Steppable Type="UniformInitializer"> -->
+   <!-- <Region> -->
+      <!-- <BoxMin x="98" y="98" z="1"/> -->
+      <!-- <BoxMax x="160" y="160" z="2"/> -->
+      <!-- <Gap>0</Gap> -->
+      <!-- <Width>7</Width> -->
+      <!-- <Types>EPI</Types> -->
+   <!-- </Region> -->
+<!-- </Steppable> -->
+   
+   <!-- <Steppable Type="UniformInitializer"> -->
+   <!-- <Region> -->
+      <!-- <BoxMin x="0" y="0" z="0"/> -->
+      <!-- <BoxMax x="255" y="255" z="1"/> -->
+      <!-- <Gap>0</Gap> -->
+      <!-- <Width>4</Width> -->
+      <!-- <Types>ECM</Types> -->
+   <!-- </Region> -->
+<!-- </Steppable> -->
+
+   
+   
 </CompuCell3D>
