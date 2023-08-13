@@ -3,10 +3,13 @@ from cc3d import CompuCellSetup
 
 from cc3d.core.PySteppables import *
 import numpy as np
-n  = 2
-thres = 0.5
+import os 
+import csv
 
-# ECM_A_Vals = np.random.
+n  = {{n}}
+thres = {{thres}}
+cellDataFreq = {{cellDataFreq}}
+totalSimTime = {{totalSimTime}}
 
 class ECM_cellInteractionSteppable(SteppableBasePy):
 
@@ -33,16 +36,26 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
         
         # for val, cell in enumerate(self.cell_list_by_type(self.ECM)):
             # cell.dict["ECM_A_Val"] = ECM_A_Vals[val]
-            # # Make sure Secretion plugin is loaded
-            # # make sure this field is defined in one of the PDE solvers
-            # # you may reuse secretor for many cells. Simply define it outside the loop
             # secretor = self.get_field_secretor("ECM_A")
             # secretor.secreteOutsideCellAtBoundary(cell, cell.dict["ECM_A_Val"])           
         
-        self.create_vector_field_cell_level_py("ECM_A")
-            
         
-            
+        ECM_A_Vect = np.random.rand(len(self.cell_list_by_type(self.ECM)),2)*2*np.pi-np.pi
+        # print(ECM_A_Vect)
+        ECM_A = self.create_vector_field_cell_level_py("ECM_A")
+        # print(type(ECM_A))
+        
+        # ECM_A.clear()
+        
+        for val, cell in enumerate(self.cell_list_by_type(self.ECM)):
+            # cell.dict["ECM_A_Vect"] = np.concatenate((ECM_A_Vect[val,:], [0]), axis = 0)
+            # print(cell.dict["ECM_A_Vect"][:])
+            # ECM_A[cell] = cell.dict["ECM_A_Vect"][:]
+            ECM_A[cell] = [ECM_A_Vect[val,0], ECM_A_Vect[val,1], 0]
+        
+        # for cell in self.cell_list_by_type(self.ECM):
+            # print(ECM_A[cell][:])
+
     def step(self,mcs):
         """
         type here the code that will run every frequency MCS
@@ -83,40 +96,59 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
                 
             CMField[cell] = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(cell, "CM")
             
-            maxSurf = 0
-            migDir = np.array([0, 0 , 0])
-            for neighbor, common_surface_area in self.get_cell_neighbor_data_list(cell):
+            # for neighbor, common_surface_area in self.get_cell_neighbor_data_list(cell):
+            
+            
+            # maxSurf = 0
+            # migDir = np.array([0, 0 , 0])
+            # for neighbor, common_surface_area in self.get_cell_neighbor_data_list(cell):
                 
-                if neighbor:
-                    if neighbor.type == self.ECM:
-                        # alignDetect = ECM_A.amountSeenByCell(neighbor)
-                        alignDetect = neighbor.dict["ECM_A_Val"]
-                        if alignDetect > maxSurf:
-                            maxSurf = alignDetect
-                            neighborCOM = np.array([neighbor.xCOM, neighbor.yCOM])
-                        # print(neighbor)
+                # if neighbor:
+                    # if neighbor.type == self.ECM:
+                        # # alignDetect = ECM_A.amountSeenByCell(neighbor)
+                        # alignDetect = neighbor.dict["ECM_A_Val"]
+                        # if alignDetect > maxSurf:
+                            # maxSurf = alignDetect
+                            # neighborCOM = np.array([neighbor.xCOM, neighbor.yCOM])
+                        # # print(neighbor)
                         
-            # print(neighborCOM)
-            shift_vector = neighborCOM - np.array([cell.xCOM, cell.yCOM])
-            shift_vector = shift_vector/np.linalg.norm(shift_vector)
-            # self.move_cell(cell, shift_vector)
-            cell.lambdaVecX = - 200 * shift_vector[0] # force component pointing along X axis - towards positive X's
-            cell.lambdaVecY = - 200 * shift_vector[1] # force component pointing along Y axis - towards negative Y's
-            # cell.lambdaVecZ = 0.0  force component pointing along Z axis
+            # # print(neighborCOM)
+            # shift_vector = neighborCOM - np.array([cell.xCOM, cell.yCOM])
+            # shift_vector = shift_vector/np.linalg.norm(shift_vector)
+            # # self.move_cell(cell, shift_vector)
+            # cell.lambdaVecX = - 200 * shift_vector[0] # force component pointing along X axis - towards positive X's
+            # cell.lambdaVecY = - 200 * shift_vector[1] # force component pointing along Y axis - towards negative Y's
+            # # cell.lambdaVecZ = 0.0  force component pointing along Z axis
                         
-                        
-                
+            # alignDetect = ECM_A.amountSeenByCell(cell)
+            # # print('this is the cell id {} and this is fiberAlignment {}'.format(cell.id, alignDetect))
             
-            
-                    
-            
-            
-            alignDetect = ECM_A.amountSeenByCell(cell)
-            # print('this is the cell id {} and this is fiberAlignment {}'.format(cell.id, alignDetect))
-            
-            # self.adhesionFlexPlugin.setMediumAdhesionMoleculeDensityByIndex(0, 11.2)
-                
-        
+        currentDir = self.output_dir
+        splitPath = os.path.split(currentDir)
+        fileName1 = 'cellInfo' + '.csv'
+
+        output_path1 = os.path.join(splitPath[0], fileName1)
+
+        if  not os.path.isfile(output_path1):  # false--> true
+            # print('CellInfo.csv DOES NOT EXIST. IT WILL BE CREATED.')
+            with open(output_path1, 'a') as fout:
+                writer = csv.writer(fout, delimiter=',')
+                writer.writerow(['cellID', 'cell.xCOM', 'cell.yCOM', 'axes0', 'axes1', 'axes2', 'surface', 'volume','cellType', 'cell.LambdaVecX', 'cell.LambdaVecY'])
+                for cell in self.cell_list:
+                    if cell.type != self.ECM:
+                        axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
+                        writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
+        else:
+            if mcs%cellDataFreq == 0:
+                with open(output_path1, 'a') as fout:
+                    writer = csv.writer(fout, delimiter=',')
+                    for cell in self.cell_list:
+                        if cell.type != self.ECM:
+                            axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
+                            writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
+
+        if mcs >= totalSimTime:
+            self.stop_simulation()
 
     def finish(self):
         """
