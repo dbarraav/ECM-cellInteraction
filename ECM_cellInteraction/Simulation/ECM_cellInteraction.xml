@@ -32,8 +32,8 @@
    </Plugin>
    
    <Plugin Name="Surface">
-      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="2.0" TargetSurface="60"/>
-      <SurfaceEnergyParameters CellType="MES" LambdaSurface="2.0" TargetSurface="60"/>
+      <SurfaceEnergyParameters CellType="EPI" LambdaSurface="0.2" TargetSurface="40"/>
+      <SurfaceEnergyParameters CellType="MES" LambdaSurface="0.2" TargetSurface="35"/>
    </Plugin>
    
    <Plugin Name="CenterOfMass">
@@ -69,11 +69,11 @@
       <Variables>
          <AdhesionInteractionMatrix>
             <BindingParameter Molecule1="CC" Molecule2="CC">0.5</BindingParameter>
-            <BindingParameter Molecule1="CC" Molecule2="CM">0</BindingParameter>
-            <BindingParameter Molecule1="CC" Molecule2="MM">0</BindingParameter>
-            <BindingParameter Molecule1="CM" Molecule2="CM">0</BindingParameter>
+            <BindingParameter Molecule1="CC" Molecule2="CM">-0.5</BindingParameter>
+            <BindingParameter Molecule1="CC" Molecule2="MM">0.0</BindingParameter>
+            <BindingParameter Molecule1="CM" Molecule2="CM">0.0</BindingParameter>
             <BindingParameter Molecule1="CM" Molecule2="MM">0.5</BindingParameter>
-            <BindingParameter Molecule1="MM" Molecule2="MM">0</BindingParameter>
+            <BindingParameter Molecule1="MM" Molecule2="MM">0.0</BindingParameter>
          </AdhesionInteractionMatrix>
       </Variables>
    </BindingFormula>

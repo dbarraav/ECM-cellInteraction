@@ -1,3 +1,5 @@
+from cc3d.cpp.PlayerPython import * 
+from cc3d import CompuCellSetup
 
 from cc3d.core.PySteppables import *
 n  = 2
@@ -13,6 +15,8 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
         """
         any code in the start function runs before MCS=0
         """
+        self.create_scalar_field_cell_level_py("molCM")
+        
         
         
         for x in range(0, self.dim.x, 4):
@@ -29,6 +33,8 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
         type here the code that will run every frequency MCS
         :param mcs: current Monte Carlo step
         """
+        CMField = self.field.molCM
+        # CMField[:,:,:] = 0
         # ECM_D = self.field.ECM_D
         ECM_D = self.get_field_secretor("ECM_D")
         for cell in self.cell_list_by_type(self.EPI):
@@ -49,7 +55,22 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CC',5.5)
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CM',3)
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'MM',0)
+        
+        for cell in self.cell_list_by_type(self.MES):
+            H = cell.dict["ECM_DVal"]**n/((thres*cell.volume)**n + cell.dict["ECM_DVal"]**n)
+            if (H > thres):
+                HH = 10*H
+                print(HH)
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CC',5.5)
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CM', HH)
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'MM',0)
+                
+            CMField[cell] = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(cell, "CM")
             
+
+
+
+                
             
             # self.adhesionFlexPlugin.setMediumAdhesionMoleculeDensityByIndex(0, 11.2)
                 
