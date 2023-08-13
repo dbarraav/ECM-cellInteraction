@@ -71,7 +71,7 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
             for neighbor, common_surface_area in self.get_cell_neighbor_data_list(cell):
                 if not neighbor:
                     cellECMContact = common_surface_area
-
+        
             # value = ECM_D[cell.xCOM, cell.yCOM, 0]
             cell.dict["ECM_DVal"] = ECM_D.amountSeenByCell(cell)
             
@@ -95,9 +95,7 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'MM',0)
                 
             CMField[cell] = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(cell, "CM")
-            
-            # for neighbor, common_surface_area in self.get_cell_neighbor_data_list(cell):
-            
+                
             
             # maxSurf = 0
             # migDir = np.array([0, 0 , 0])
@@ -122,6 +120,8 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
                         
             # alignDetect = ECM_A.amountSeenByCell(cell)
             # # print('this is the cell id {} and this is fiberAlignment {}'.format(cell.id, alignDetect))
+
+                
             
         currentDir = self.output_dir
         splitPath = os.path.split(currentDir)
