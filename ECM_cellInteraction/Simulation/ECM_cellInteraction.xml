@@ -80,8 +80,17 @@
    <NeighborOrder>1</NeighborOrder>
 </Plugin>
 
+<Plugin Name="ExternalPotential">
    
-   <Plugin Name="Secretion"></Plugin>
+   <!-- External force applied to cell. Each cell type has different force. -->
+   <!-- For more flexible specification of the constraint (done in Python) please use ExternalPotential plugin without specifying per-type parameters -->
+   <!-- <Algorithm options are: PixelBased, CenterOfMassBased> -->
+   <Algorithm>CenterOfMassBased</Algorithm>
+</Plugin>
+   
+   <Plugin Name="Secretion">
+
+   </Plugin>
 
    <Steppable Type="DiffusionSolverFE">
       
@@ -113,6 +122,45 @@
                <ConstantValue PlanePosition="Max" Value="1.0"/>
                <!-- Other options are (examples): -->
                <!-- <Periodic/> -->
+               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
+            </Plane>
+            <Plane Axis="Y">
+               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
+               <!-- <ConstantDerivative PlanePosition="Max" Value="5.0"/> -->
+               <!-- Other options are (examples): -->
+               <Periodic/>
+               <!-- <ConstantValue PlanePosition="Min" Value="10.0"/> -->
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>
+      
+      <DiffusionField Name="ECM_A">
+         <DiffusionData>
+            <FieldName>ECM_A</FieldName>
+            <GlobalDiffusionConstant>0.0</GlobalDiffusionConstant>
+            <GlobalDecayConstant>0.0</GlobalDecayConstant>
+            <!-- Additional options are: -->
+            <!-- <InitialConcentrationExpression>x/256</InitialConcentrationExpression> -->
+            <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
+            <DiffusionCoefficient CellType="EPI">0</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="MES">0</DiffusionCoefficient>
+            <!-- <DecayCoefficient CellType="EPI">0.0001</DecayCoefficient> -->
+            <!-- <DecayCoefficient CellType="MES">0.0001</DecayCoefficient> -->
+         </DiffusionData>
+         <SecretionData>
+            <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
+            
+            <!-- Uniform secretion Definition -->
+            <!-- <Secretion Type="MES">0.1</Secretion> -->
+            <!-- <SecretionOnContact SecreteOnContactWith="EPI,MES" Type="MES">0.2</SecretionOnContact> -->
+            <!-- <ConstantConcentration Type="MES">0.1</ConstantConcentration> -->
+         </SecretionData>
+         <BoundaryConditions>
+            <Plane Axis="X">
+               <!-- <ConstantValue PlanePosition="Min" Value="0.0"/> -->
+               <!-- <ConstantValue PlanePosition="Max" Value="1.0"/> -->
+               <!-- Other options are (examples): -->
+               <Periodic/>
                <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
             <Plane Axis="Y">
