@@ -6,10 +6,10 @@ import numpy as np
 import os 
 import csv
 
-n  = {{n}}
-thres = {{thres}}
-cellDataFreq = {{cellDataFreq}}
-totalSimTime = {{totalSimTime}}
+n  = 2
+thres = np.array([0.5])
+cellDataFreq = 500
+totalSimTime = 1000
 
 class ECM_cellInteractionSteppable(SteppableBasePy):
 
@@ -39,22 +39,7 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
             # secretor = self.get_field_secretor("ECM_A")
             # secretor.secreteOutsideCellAtBoundary(cell, cell.dict["ECM_A_Val"])           
         
-        
-        ECM_A_Vect = np.random.rand(len(self.cell_list_by_type(self.ECM)),2)*2*np.pi-np.pi
-        # print(ECM_A_Vect)
-        ECM_A = self.create_vector_field_cell_level_py("ECM_A")
-        # print(type(ECM_A))
-        
-        # ECM_A.clear()
-        
-        for val, cell in enumerate(self.cell_list_by_type(self.ECM)):
-            # cell.dict["ECM_A_Vect"] = np.concatenate((ECM_A_Vect[val,:], [0]), axis = 0)
-            # print(cell.dict["ECM_A_Vect"][:])
-            # ECM_A[cell] = cell.dict["ECM_A_Vect"][:]
-            ECM_A[cell] = [ECM_A_Vect[val,0], ECM_A_Vect[val,1], 0]
-        
-        # for cell in self.cell_list_by_type(self.ECM):
-            # print(ECM_A[cell][:])
+
 
     def step(self,mcs):
         """
@@ -91,7 +76,8 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
                 HH = 10*H
                 # print(HH)
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CC',5.5)
-                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CM', HH)
+                
+                self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'CM', HH[0])
                 self.adhesionFlexPlugin.setAdhesionMoleculeDensity(cell,'MM',0)
                 
             CMField[cell] = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(cell, "CM")
@@ -123,29 +109,29 @@ class ECM_cellInteractionSteppable(SteppableBasePy):
 
                 
             
-        currentDir = self.output_dir
-        splitPath = os.path.split(currentDir)
-        fileName1 = 'cellInfo' + '.csv'
+        # currentDir = self.output_dir
+        # splitPath = os.path.split(currentDir)
+        # fileName1 = 'cellInfo' + '.csv'
 
-        output_path1 = os.path.join(splitPath[0], fileName1)
+        # output_path1 = os.path.join(splitPath[0], fileName1)
 
-        if  not os.path.isfile(output_path1):  # false--> true
-            # print('CellInfo.csv DOES NOT EXIST. IT WILL BE CREATED.')
-            with open(output_path1, 'a') as fout:
-                writer = csv.writer(fout, delimiter=',')
-                writer.writerow(['cellID', 'cell.xCOM', 'cell.yCOM', 'axes0', 'axes1', 'axes2', 'surface', 'volume','cellType', 'cell.LambdaVecX', 'cell.LambdaVecY'])
-                for cell in self.cell_list:
-                    if cell.type != self.ECM:
-                        axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
-                        writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
-        else:
-            if mcs%cellDataFreq == 0:
-                with open(output_path1, 'a') as fout:
-                    writer = csv.writer(fout, delimiter=',')
-                    for cell in self.cell_list:
-                        if cell.type != self.ECM:
-                            axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
-                            writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
+        # if  not os.path.isfile(output_path1):  # false--> true
+            # # print('CellInfo.csv DOES NOT EXIST. IT WILL BE CREATED.')
+            # with open(output_path1, 'a') as fout:
+                # writer = csv.writer(fout, delimiter=',')
+                # writer.writerow(['cellID', 'cell.xCOM', 'cell.yCOM', 'axes0', 'axes1', 'axes2', 'surface', 'volume','cellType', 'cell.LambdaVecX', 'cell.LambdaVecY'])
+                # for cell in self.cell_list:
+                    # if cell.type != self.ECM:
+                        # axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
+                        # writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
+        # else:
+            # if mcs%cellDataFreq == 0:
+                # with open(output_path1, 'a') as fout:
+                    # writer = csv.writer(fout, delimiter=',')
+                    # for cell in self.cell_list:
+                        # if cell.type != self.ECM:
+                            # axes=self.momentOfInertiaPlugin.getSemiaxes(cell)
+                            # writer.writerow([cell.id, cell.xCOM, cell.yCOM, axes[0], axes[1], axes[2], cell.surface, cell.volume, cell.type, cell.lambdaVecX, cell.lambdaVecY])
 
         if mcs >= totalSimTime:
             self.stop_simulation()

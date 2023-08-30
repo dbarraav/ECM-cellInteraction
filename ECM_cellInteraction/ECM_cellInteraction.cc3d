@@ -1,6 +1,6 @@
 <Simulation version="4.2.5">
    <XMLScript Type="XMLScript">Simulation/ECM_cellInteraction.xml</XMLScript>
    <PythonScript Type="PythonScript">Simulation/ECM_cellInteraction.py</PythonScript>
+   <Resource Type="Python">Simulation/CellAlignment.py</Resource>
    <Resource Type="Python">Simulation/ECM_cellInteractionSteppables.py</Resource>
-   <ParameterScan Type="ParameterScan">Simulation/ParameterScanSpecs.json</ParameterScan>
 </Simulation>
